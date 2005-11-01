@@ -1,0 +1,20 @@
+--- apcupsd-3.10.18/platforms/redhat/apcupsd.in.orig	2005-01-09 15:55:41.000000000 -0700
++++ apcupsd-3.10.18/platforms/redhat/apcupsd.in	2005-10-31 10:35:05.000000000 -0700
+@@ -3,7 +3,7 @@
+ # apcupsd      This shell script takes care of starting and stopping
+ #	       the apcupsd UPS monitoring daemon.
+ #
+-# chkconfig: 2345 60 99
++# chkconfig: - 60 99
+ # description: apcupsd monitors power and takes action if necessary
+ #
+ APCPID=@PIDDIR@/apcupsd.pid
+@@ -42,7 +42,7 @@
+        rm -f $APCPID
+        rm -f @LOCKDIR@/subsys/apcupsd
+        ;;
+-    restart)
++    restart|reload)
+        $0 stop
+        sleep 15
+        $0 start
