@@ -1,16 +1,19 @@
 Name:         apcupsd
 Version:      3.10.18
-Release:      3%{?dist}
+Release:      4%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
 License:      GPL
 URL:          http://www.apcupsd.com
 Source0:      http://download.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
+Source1:      apcupsd.logrotate
+Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.10.18-init.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0, dos2unix
+BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
@@ -46,18 +49,24 @@ dos2unix examples/*status
 %build
 %configure \
         --sysconfdir="%{_sysconfdir}/apcupsd" \
-        --with-cgi-bin="%{_localstatedir}/www/cgi-bin/apcupsd" \
+        --with-cgi-bin="%{_localstatedir}/www/apcupsd" \
         --enable-cgi \
         --enable-pthreads \
         --enable-net \
         --enable-master-slave \
         --enable-apcsmart \
         --enable-dumb \
+        --enable-net-snmp \
+        --enable-snmp \
         --enable-usb \
+        --enable-powerflute \
+        --enable-nls \
+        --with-libwrap=%{_libdir} \
         --with-serial-dev= \
         --with-upstype=usb \
         --with-upscable=usb \
         APCUPSD_MAIL=/bin/mail
+
 
 make
 
@@ -66,7 +75,7 @@ make
 rm -rf $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_initrddir}
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/cgi-bin/apcupsd
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
 
 make DESTDIR=$RPM_BUILD_ROOT install
 
@@ -77,6 +86,11 @@ install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
 	      
 install -m755 platforms/redhat/apcupsd $RPM_BUILD_ROOT%{_initrddir}
+
+install -d %{buildroot}%{_sysconfdir}/logrotate.d
+install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+install -d %{buildroot}%{_sysconfdir}/httpd/conf.d
+install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
 
 chmod -x examples/*.conf
 rm examples/*.in
@@ -102,13 +116,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/apcupsd/mainsback
 %{_sysconfdir}/apcupsd/masterconnect
 %{_sysconfdir}/apcupsd/mastertimeout
+%config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
 %attr(0755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
 
 %files cgi
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.css
-%{_localstatedir}/www/cgi-bin/apcupsd/
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/apcupsd.conf
+%{_localstatedir}/www/apcupsd/
 
 
 %post
@@ -126,6 +142,12 @@ fi
 
 
 %changelog
+* Fri Nov  4 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-4
+- Add logrotate script for /var/log/apcupsd.events
+- Add apache configuration script and change cgi directory to
+  /var/www/apcupsd
+- Compile in snmp, net-snmp, powerflute, nls, add tcp_wrappers support
+
 * Mon Oct 17 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-3
 - Removed %{_smp_mflags} from make, broke builds
 - Patch init file to not start automatically and add reload
