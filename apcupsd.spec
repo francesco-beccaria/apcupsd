@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.10.18
-Release:      5%{?dist}
+Release:      6%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -142,6 +142,9 @@ fi
 
 
 %changelog
+* Wed Dec 21 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-6
+- Rebuild
+
 * Wed Nov 16 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-5
 - Bump for new openssl
 
