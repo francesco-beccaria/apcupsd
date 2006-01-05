@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.10.18
-Release:      7%{?dist}
+Version:      3.12.0
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -43,7 +43,7 @@ A CGI interface to the APC UPS monitoring daemon.
 %prep
 %setup -q
 %patch -p1 -b .init
-dos2unix examples/*status
+dos2unix examples/*status examples/*.c
 
 
 %build
@@ -92,7 +92,7 @@ install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 install -d %{buildroot}%{_sysconfdir}/httpd/conf.d
 install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
 
-chmod -x examples/*.conf
+chmod -x examples/*.conf examples/*.c
 rm examples/*.in
 
 
@@ -102,7 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING ChangeLog doc/README.apcaccess doc/developers_manual examples ReleaseNotes
+%doc COPYING ChangeLog examples ReleaseNotes
 %dir %{_sysconfdir}/apcupsd
 %{_initrddir}/apcupsd
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
@@ -112,8 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/apcupsd/changeme
 %{_sysconfdir}/apcupsd/commfailure
 %{_sysconfdir}/apcupsd/commok
+%{_sysconfdir}/apcupsd/offbattery
 %{_sysconfdir}/apcupsd/onbattery
-%{_sysconfdir}/apcupsd/mainsback
 %{_sysconfdir}/apcupsd/masterconnect
 %{_sysconfdir}/apcupsd/mastertimeout
 %config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
@@ -142,6 +142,9 @@ fi
 
 
 %changelog
+* Wed Jan  4 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.12.0-1
+- Update to 3.12.0
+
 * Tue Jan  3 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-7
 - Rebuild
 
