@@ -1,5 +1,5 @@
 Name:         apcupsd
-Version:      3.12.1
+Version:      3.12.2
 Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
@@ -44,7 +44,8 @@ A CGI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch -p1 -b .init
 dos2unix examples/*status examples/*.c
-
+# Don't strip binaries
+sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
 %build
 %configure \
@@ -142,6 +143,10 @@ fi
 
 
 %changelog
+* Tue Jan 10 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.12.2-1
+- Update to 3.12.2
+- Don't strip binaries
+
 * Tue Jan 10 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.12.1-1
 - Update to 3.12.1
 
