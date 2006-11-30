@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.12.4
-Release:      3%{?dist}
+Version:      3.13.9
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -10,10 +10,12 @@ Source0:      http://download.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.10.18-init.patch
+Patch1:       apcupsd-net-snmp.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0, dos2unix
 BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers
+BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
@@ -40,12 +42,23 @@ Requires:     httpd
 A CGI interface to the APC UPS monitoring daemon.
 
 
+%package gui
+Summary:      GUI interface for apcupsd
+Group:        Applications/System
+Requires:     %{name} = %{version}-%{release}
+
+%description gui
+A GUI interface to the APC UPS monitoring daemon.
+
+
 %prep
 %setup -q
 %patch -p1 -b .init
+%patch1 -p1 -b .net-snmp
 dos2unix examples/*status examples/*.c
 # Don't strip binaries
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
+
 
 %build
 %configure \
@@ -54,7 +67,6 @@ sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
         --enable-cgi \
         --enable-pthreads \
         --enable-net \
-        --enable-master-slave \
         --enable-apcsmart \
         --enable-dumb \
         --enable-net-snmp \
@@ -62,13 +74,13 @@ sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
         --enable-usb \
         --enable-powerflute \
         --enable-nls \
+        --enable-gapcmon \
+        --enable-pcnet \
         --with-libwrap=%{_libdir} \
         --with-serial-dev= \
         --with-upstype=usb \
         --with-upscable=usb \
         APCUPSD_MAIL=/bin/mail
-
-
 make
 
 
@@ -93,6 +105,12 @@ install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 install -d %{buildroot}%{_sysconfdir}/httpd/conf.d
 install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
 
+desktop-file-install --vendor="fedora" \
+        --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+        --delete-original \
+        ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
+
+# Cleanup for later %doc processing
 chmod -x examples/*.conf examples/*.c
 rm examples/*.in
 
@@ -127,6 +145,17 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/apcupsd.conf
 %{_localstatedir}/www/apcupsd/
 
+%files gui
+%defattr(-,root,root,-)
+%{_bindir}/gapcmon
+%{_datadir}/applications/fedora-gapcmon.desktop
+%{_datadir}/pixmaps/apcupsd.png
+%{_datadir}/pixmaps/charging.png
+%{_datadir}/pixmaps/gapc_prefs.png
+%{_datadir}/pixmaps/onbatt.png
+%{_datadir}/pixmaps/online.png
+%{_datadir}/pixmaps/unplugged.png
+
 
 %post
 # add our links
@@ -143,6 +172,9 @@ fi
 
 
 %changelog
+* Thu Nov 30 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.13.9-1
+- Update to 3.13.9, add gui package
+
 * Mon Oct  9 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.12.4-3
 - Fix /etc/httpd/conf.d/apcupsd.conf so DirectoryIndex works (bug #209952).
   Patch from Clive Messer (clive@vacuumtube.org.uk)
@@ -179,13 +211,13 @@ fi
 - Compile in snmp, net-snmp, powerflute, nls, add tcp_wrappers support
 
 * Mon Oct 17 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-3
-- Removed %{_smp_mflags} from make, broke builds
+- Removed %%{_smp_mflags} from make, broke builds
 - Patch init file to not start automatically and add reload
 - Mark css file config
 - Require /sbin/chkconfig
 
 * Mon Oct 17 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-2
-- Add %defattr to -cgi package
+- Add %%defattr to -cgi package
 
 * Wed Aug 17 2005 - Orion Poplawski <orion@cora.nwra.com> - 3.10.18-1
 - Initial Fedora Version
