@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.13.9
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -14,7 +14,7 @@ Patch1:       apcupsd-net-snmp.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0, dos2unix
-BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers
+BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers-devel
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
@@ -128,13 +128,13 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
 %config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
-%{_sysconfdir}/apcupsd/changeme
-%{_sysconfdir}/apcupsd/commfailure
-%{_sysconfdir}/apcupsd/commok
-%{_sysconfdir}/apcupsd/offbattery
-%{_sysconfdir}/apcupsd/onbattery
-%{_sysconfdir}/apcupsd/masterconnect
-%{_sysconfdir}/apcupsd/mastertimeout
+%config(noreplace) %{_sysconfdir}/apcupsd/changeme
+%config(noreplace) %{_sysconfdir}/apcupsd/commfailure
+%config(noreplace) %{_sysconfdir}/apcupsd/commok
+%config(noreplace) %{_sysconfdir}/apcupsd/offbattery
+%config(noreplace) %{_sysconfdir}/apcupsd/onbattery
+%config(noreplace) %{_sysconfdir}/apcupsd/masterconnect
+%config(noreplace) %{_sysconfdir}/apcupsd/mastertimeout
 %config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
 %attr(0755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
@@ -172,6 +172,10 @@ fi
 
 
 %changelog
+* Fri Jan  5 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.13.9-2
+- Mark everything in /etc/apcupsd noreplace
+- Change BR to tcp_wrappers-devel
+
 * Thu Nov 30 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.13.9-1
 - Update to 3.13.9, add gui package
 
