@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.12.4
-Release:      3%{?dist}
+Release:      4%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -110,13 +110,13 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
 %config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
-%{_sysconfdir}/apcupsd/changeme
-%{_sysconfdir}/apcupsd/commfailure
-%{_sysconfdir}/apcupsd/commok
-%{_sysconfdir}/apcupsd/offbattery
-%{_sysconfdir}/apcupsd/onbattery
-%{_sysconfdir}/apcupsd/masterconnect
-%{_sysconfdir}/apcupsd/mastertimeout
+%config(noreplace) %{_sysconfdir}/apcupsd/changeme
+%config(noreplace) %{_sysconfdir}/apcupsd/commfailure
+%config(noreplace) %{_sysconfdir}/apcupsd/commok
+%config(noreplace) %{_sysconfdir}/apcupsd/offbattery
+%config(noreplace) %{_sysconfdir}/apcupsd/onbattery
+%config(noreplace) %{_sysconfdir}/apcupsd/masterconnect
+%config(noreplace) %{_sysconfdir}/apcupsd/mastertimeout
 %config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
 %attr(0755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
@@ -143,6 +143,9 @@ fi
 
 
 %changelog
+* Fri Jan  5 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.12.4-4
+- Mark everying in /etc/apcupsd noreplace
+
 * Mon Oct  9 2006 - Orion Poplawski <orion@cora.nwra.com> - 3.12.4-3
 - Fix /etc/httpd/conf.d/apcupsd.conf so DirectoryIndex works (bug #209952).
   Patch from Clive Messer (clive@vacuumtube.org.uk)
