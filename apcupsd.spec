@@ -130,8 +130,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/apcupsd/commok
 %config(noreplace) %{_sysconfdir}/apcupsd/offbattery
 %config(noreplace) %{_sysconfdir}/apcupsd/onbattery
-%config(noreplace) %{_sysconfdir}/apcupsd/masterconnect
-%config(noreplace) %{_sysconfdir}/apcupsd/mastertimeout
 %config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
 %attr(0755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
