@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.13.9
-Release:      2%{?dist}
+Version:      3.14.0
+Release:      0%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -10,10 +10,9 @@ Source0:      http://download.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.10.18-init.patch
-Patch1:       apcupsd-net-snmp.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0, dos2unix
+BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
 BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers-devel
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
@@ -54,8 +53,6 @@ A GUI interface to the APC UPS monitoring daemon.
 %prep
 %setup -q
 %patch -p1 -b .init
-%patch1 -p1 -b .net-snmp
-dos2unix examples/*status examples/*.c
 # Don't strip binaries
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
@@ -172,6 +169,9 @@ fi
 
 
 %changelog
+* Mon Feb 12 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-1
+- Update to 3.14.0
+
 * Fri Jan  5 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.13.9-2
 - Mark everything in /etc/apcupsd noreplace
 - Change BR to tcp_wrappers-devel
