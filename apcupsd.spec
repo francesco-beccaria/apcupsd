@@ -13,6 +13,7 @@ Patch0:       apcupsd-3.10.18-init.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
+BuildRequires: openssl-devel
 BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
