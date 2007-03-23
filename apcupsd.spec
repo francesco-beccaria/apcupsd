@@ -13,7 +13,7 @@ Patch0:       apcupsd-3.10.18-init.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
-BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers-devel
+BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
@@ -167,8 +167,9 @@ fi
 
 
 %changelog
-* Mon Feb 12 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-1
+* Fri Mar 23 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-1
 - Update to 3.14.0
+- No tcp_wrappers-devel in EL
 
 * Fri Jan  5 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.13.9-2
 - Mark everything in /etc/apcupsd noreplace
