@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.0
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -167,6 +167,9 @@ fi
 
 
 %changelog
+* Fri Apr 19 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-2
+- Rebuild with RHEL5 final
+
 * Fri Mar 23 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-1
 - Update to 3.14.0
 - No tcp_wrappers-devel in EL
