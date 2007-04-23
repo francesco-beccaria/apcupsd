@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.12.4
-Release:      4%{?dist}
+Release:      5%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -9,7 +9,7 @@ URL:          http://www.apcupsd.com
 Source0:      http://download.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
-Patch0:       apcupsd-3.10.18-init.patch
+Patch0:       apcupsd-3.14.0-init.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0, dos2unix
@@ -143,6 +143,9 @@ fi
 
 
 %changelog
+* Mon Apr 23 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.12.4-5
+- Fix init script for LSB compliance (bug #237532)
+
 * Fri Jan  5 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.12.4-4
 - Mark everying in /etc/apcupsd noreplace
 
