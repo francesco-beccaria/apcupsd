@@ -9,7 +9,7 @@ URL:          http://www.apcupsd.com
 Source0:      http://download.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
-Patch0:       apcupsd-3.10.18-init.patch
+Patch0:       apcupsd-3.14.0-init.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
