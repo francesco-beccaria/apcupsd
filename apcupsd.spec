@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.0
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -167,6 +167,9 @@ fi
 
 
 %changelog
+* Mon Apr 23 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-3
+- Fix init script for LSB compliance (bug #237532)
+
 * Fri Apr 19 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-2
 - Rebuild with RHEL5 final
 
