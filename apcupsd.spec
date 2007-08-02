@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.1
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -9,8 +9,9 @@ URL:          http://www.apcupsd.com
 Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
-Patch0:       apcupsd-3.14.0-init.patch
+Patch0:       apcupsd-3.14.1-init.patch
 Patch1:       apcupsd-3.14.1-linux-usb.patch
+Patch2:       apcupsd-3.14.1-cloexec.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
@@ -19,6 +20,8 @@ BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
+Requires(preun): /sbin/service
+Requires(postun): /sbin/service
 
 %description
 Apcupsd can be used for controlling most APC UPSes. During a
@@ -55,6 +58,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch -p1 -b .init
 %patch1 -p1 -b .linux-usb
+%patch2 -p1 -b .cloexec
 # Don't strip binaries
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
@@ -155,20 +159,25 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
-# add our links
-if [ "$1" -ge 1 ] ; then
 /sbin/chkconfig --add apcupsd
-fi
-
 
 %preun
-if [ $1 = 0 ] ; then
-        # remove startup links
-        /sbin/chkconfig --del apcupsd
+if [ $1 = 0 ]; then
+   /sbin/service apcupsd stop >/dev/null 2>&1
+   /sbin/chkconfig --del apcupsd
+fi
+
+%postun
+if [ $1 -ge 1 ]; then
+   /sbin/service apcupsd condrestart >/dev/null 2>&1 || :
 fi
 
 
 %changelog
+* Wed Aug  1 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.1-3
+- Add patch to close open file descriptors (bug #247162)
+- Stop/restart service as needed on removal/upgrade
+
 * Mon Jun 02 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.1-2
 - Add patch for linux USB UPS detection (bug #245864)
 
