@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.1
-Release:      3%{?dist}
+Version:      3.14.2
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -10,8 +10,6 @@ Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.14.1-init.patch
-Patch1:       apcupsd-3.14.1-linux-usb.patch
-Patch2:       apcupsd-3.14.1-cloexec.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
@@ -57,8 +55,6 @@ A GUI interface to the APC UPS monitoring daemon.
 %prep
 %setup -q
 %patch -p1 -b .init
-%patch1 -p1 -b .linux-usb
-%patch2 -p1 -b .cloexec
 # Don't strip binaries
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
@@ -174,6 +170,9 @@ fi
 
 
 %changelog
+* Wed Oct 10 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.2-1
+- Update to 3.14.2, remove upstreamed patches
+
 * Wed Aug  1 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.1-3
 - Add patch to close open file descriptors (bug #247162)
 - Stop/restart service as needed on removal/upgrade
