@@ -1,5 +1,5 @@
 Name:         apcupsd
-Version:      3.14.2
+Version:      3.14.3
 Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
@@ -133,6 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/apcupsd/offbattery
 %config(noreplace) %{_sysconfdir}/apcupsd/onbattery
 %config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
+%{_datadir}/hal/fdi/policy/20thirdparty/80-apcupsd-ups-policy.fdi
 %attr(0755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
 
@@ -170,6 +171,9 @@ fi
 
 
 %changelog
+* Wed Jan 23 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.3-1
+- Update to 3.14.3
+
 * Wed Oct 10 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.2-1
 - Update to 3.14.2, remove upstreamed patches
 
