@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.2
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
