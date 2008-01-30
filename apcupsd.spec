@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.3
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -10,6 +10,7 @@ Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.14.1-init.patch
+Patch1:       apcupsd-3.14.2-shutdown.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
@@ -54,7 +55,9 @@ A GUI interface to the APC UPS monitoring daemon.
 
 %prep
 %setup -q
-%patch -p1 -b .init
+%patch0 -p1 -b .init
+%patch1 -p1 -b .shutdown
+
 # Don't strip binaries
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
@@ -171,6 +174,9 @@ fi
 
 
 %changelog
+* Wed Jan 30 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.3-2
+- fix #348701 - apcupsd control script does not invoke shutdown properly
+
 * Wed Jan 23 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.3-1
 - Update to 3.14.3
 
