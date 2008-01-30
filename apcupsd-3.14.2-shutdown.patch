@@ -1,0 +1,12 @@
+diff -up apcupsd-3.14.2/platforms/apccontrol.in.shutdown apcupsd-3.14.2/platforms/apccontrol.in
+--- apcupsd-3.14.2/platforms/apccontrol.in.shutdown	2008-01-30 13:39:33.000000000 +0100
++++ apcupsd-3.14.2/platforms/apccontrol.in	2008-01-30 13:45:00.000000000 +0100
+@@ -104,7 +104,7 @@ case "$1" in
+     ;;
+     doshutdown)
+ 	echo "UPS ${2} initiated Shutdown Sequence" | ${WALL}
+-	${SHUTDOWN} -h now "apcupsd UPS ${2} initiated shutdown"
++	${SHUTDOWN} -h -H now "apcupsd UPS ${2} initiated shutdown"
+     ;;
+     annoyme)
+ 	echo "Power problems with UPS ${2}. Please logoff." | ${WALL}
