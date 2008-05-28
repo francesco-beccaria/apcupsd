@@ -16,7 +16,7 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
 BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers-devel
-BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils, autoconf
+BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
@@ -82,8 +82,7 @@ cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
         --with-upstype=usb \
         --with-upscable=usb \
         APCUPSD_MAIL=/bin/mail
-make
-
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -126,8 +125,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/apcupsd
 %{_initrddir}/apcupsd
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
-%config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
-%config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
 %config(noreplace) %{_sysconfdir}/apcupsd/changeme
 %config(noreplace) %{_sysconfdir}/apcupsd/commfailure
@@ -143,6 +140,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.css
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/apcupsd.conf
+%config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
+%config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
 %{_localstatedir}/www/apcupsd/
 
 %files gui
@@ -173,6 +172,9 @@ fi
 
 
 %changelog
+* Wed May 28 2008 Tomas Smetana <tsmetana@redhat.com>
+- fix #448637 - hosts.conf and multimon.conf should be in apcupsd-cgi
+
 * Wed May 28 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.4-1
 - new upstream version
 
