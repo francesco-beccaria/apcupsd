@@ -1,6 +1,6 @@
-diff -up apcupsd-3.14.2/platforms/apccontrol.in.shutdown apcupsd-3.14.2/platforms/apccontrol.in
---- apcupsd-3.14.2/platforms/apccontrol.in.shutdown	2008-01-30 13:39:33.000000000 +0100
-+++ apcupsd-3.14.2/platforms/apccontrol.in	2008-01-30 13:45:00.000000000 +0100
+diff -up apcupsd-3.14.4/platforms/apccontrol.in.shutdown apcupsd-3.14.4/platforms/apccontrol.in
+--- apcupsd-3.14.4/platforms/apccontrol.in.shutdown	2008-05-28 09:15:47.000000000 +0200
++++ apcupsd-3.14.4/platforms/apccontrol.in	2008-05-28 09:16:04.000000000 +0200
 @@ -104,7 +104,7 @@ case "$1" in
      ;;
      doshutdown)

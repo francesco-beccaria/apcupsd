@@ -1,16 +1,17 @@
 Name:         apcupsd
-Version:      3.14.3
-Release:      2.1%{?dist}
+Version:      3.14.4
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
-License:      GPL
+License:      GPLv2
 URL:          http://www.apcupsd.com
 Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
-Patch0:       apcupsd-3.14.1-init.patch
-Patch1:       apcupsd-3.14.2-shutdown.patch
+Patch0:       apcupsd-3.14.3-init.patch
+Patch1:       apcupsd-3.14.4-shutdown.patch
+Patch2:       apcupsd-3.14.1-cloexec.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
@@ -57,10 +58,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
-
-# Don't strip binaries
-sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
-
+%patch2 -p1 -b .cloexec
 
 %build
 %configure \
@@ -74,8 +72,6 @@ sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
         --enable-net-snmp \
         --enable-snmp \
         --enable-usb \
-        --enable-powerflute \
-        --enable-nls \
         --enable-gapcmon \
         --enable-pcnet \
         --with-libwrap=%{_libdir} \
@@ -83,8 +79,7 @@ sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
         --with-upstype=usb \
         --with-upscable=usb \
         APCUPSD_MAIL=/bin/mail
-make
-
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -99,7 +94,7 @@ rm $RPM_BUILD_ROOT%{_initrddir}/halt.old
 
 install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
-	      
+
 install -m755 platforms/redhat/apcupsd $RPM_BUILD_ROOT%{_initrddir}
 
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
@@ -127,8 +122,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/apcupsd
 %{_initrddir}/apcupsd
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
-%config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
-%config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
 %config(noreplace) %{_sysconfdir}/apcupsd/changeme
 %config(noreplace) %{_sysconfdir}/apcupsd/commfailure
@@ -144,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.css
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/apcupsd.conf
+%config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
+%config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
 %{_localstatedir}/www/apcupsd/
 
 %files gui
@@ -174,6 +169,11 @@ fi
 
 
 %changelog
+* Wed May 28 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.4-1
+- new upstream version
+- fix #448637 - hosts.conf and multimon.conf should be in apcupsd-cgi
+- fix #448633 - error in the initscript
+
 * Tue Feb 12 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.3-2.1
 - rebuild (gcc-4.3)
 
