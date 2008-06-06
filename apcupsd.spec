@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.4
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -11,11 +11,10 @@ Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
-Patch2:       apcupsd-3.14.1-cloexec.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
-BuildRequires: net-snmp-devel, gettext-devel, ncurses-devel, tcp_wrappers-devel
+BuildRequires: net-snmp-devel, tcp_wrappers-devel
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post):  /sbin/chkconfig
@@ -58,7 +57,6 @@ A GUI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
-%patch2 -p1 -b .cloexec
 
 %build
 %configure \
@@ -169,6 +167,10 @@ fi
 
 
 %changelog
+* Fri Jun 06 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.4-2
+- drop useless cloexec patch
+- fix build requires
+
 * Wed May 28 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.4-1
 - new upstream version
 - fix #448637 - hosts.conf and multimon.conf should be in apcupsd-cgi
