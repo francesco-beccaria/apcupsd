@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.4
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -171,6 +171,9 @@ fi
 
 
 %changelog
+* Thu Jan 15 2009 Tomas Mraz <tmraz@redhat.com> - 3.14.4-3
+- rebuild with new openssl
+
 * Fri Jun 06 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.4-2
 - drop useless build requirements
 - fix #448637 - hosts.conf and multimon.conf should be in apcupsd-cgi
