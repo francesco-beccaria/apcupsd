@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.4
-Release:      3%{?dist}
+Version:      3.14.5
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -110,7 +110,7 @@ desktop-file-install --vendor="fedora" \
         ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
 
 # Cleanup for later %doc processing
-chmod -x examples/*.conf examples/*.c
+chmod -x examples/*.c
 rm examples/*.in
 
 
@@ -171,6 +171,9 @@ fi
 
 
 %changelog
+* Thu Jan 22 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.5-1
+- update to 3.14.5
+
 * Thu Jan 15 2009 Tomas Mraz <tmraz@redhat.com> - 3.14.4-3
 - rebuild with new openssl
 
