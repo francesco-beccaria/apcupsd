@@ -1,6 +1,6 @@
-diff -up apcupsd-3.14.3/platforms/redhat/apcupsd.in.init apcupsd-3.14.3/platforms/redhat/apcupsd.in
---- apcupsd-3.14.3/platforms/redhat/apcupsd.in.init	2007-04-24 01:35:33.000000000 +0200
-+++ apcupsd-3.14.3/platforms/redhat/apcupsd.in	2008-05-28 09:05:39.000000000 +0200
+diff -up apcupsd-3.14.5/platforms/redhat/apcupsd.in.init apcupsd-3.14.5/platforms/redhat/apcupsd.in
+--- apcupsd-3.14.5/platforms/redhat/apcupsd.in.init	2008-11-01 16:03:26.000000000 +0100
++++ apcupsd-3.14.5/platforms/redhat/apcupsd.in	2009-01-22 10:58:00.429886991 +0100
 @@ -3,9 +3,19 @@
  # apcupsd      This shell script takes care of starting and stopping
  #	       the apcupsd UPS monitoring daemon.
@@ -21,8 +21,8 @@ diff -up apcupsd-3.14.3/platforms/redhat/apcupsd.in.init apcupsd-3.14.3/platform
 +
  APCPID=@PIDDIR@/apcupsd.pid
  
- if test -f /etc/whitebox-release ; then
-@@ -44,9 +54,11 @@ case "$1" in
+ # Source function libarary
+@@ -30,9 +40,11 @@ case "$1" in
         ;;
      restart|force-reload)
         $0 stop
@@ -35,7 +35,7 @@ diff -up apcupsd-3.14.3/platforms/redhat/apcupsd.in.init apcupsd-3.14.3/platform
      reload)
         echo "$0: reload not implemented"
         exit 3
-@@ -62,7 +74,7 @@ case "$1" in
+@@ -48,7 +60,7 @@ case "$1" in
         fi
         ;;
      *)

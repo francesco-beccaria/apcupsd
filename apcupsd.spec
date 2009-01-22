@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.4
-Release:      2%{?dist}
+Version:      3.14.5
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -110,7 +110,7 @@ desktop-file-install --vendor="fedora" \
         ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
 
 # Cleanup for later %doc processing
-chmod -x examples/*.conf examples/*.c
+chmod -x examples/*.c
 rm examples/*.in
 
 
@@ -171,6 +171,9 @@ fi
 
 
 %changelog
+* Thu Jan 22 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.5-1
+- updated to 3.14.5
+
 * Fri Jun 06 2008 Tomas Smetana <tsmetana@redhat.com> - 3.14.4-2
 - drop useless build requirements
 - fix #448637 - hosts.conf and multimon.conf should be in apcupsd-cgi
