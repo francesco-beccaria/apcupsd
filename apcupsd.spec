@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.5
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -171,6 +171,9 @@ fi
 
 
 %changelog
+* Mon Feb 23 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Thu Jan 22 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.5-1
 - update to 3.14.5
 
