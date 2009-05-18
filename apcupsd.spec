@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.5
-Release:      3%{?dist}
+Version:      3.14.6
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -11,7 +11,6 @@ Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
-Patch2:       apcupsd-3.14.5-gcc44.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -59,7 +58,6 @@ A GUI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
-%patch2 -p1 -b .gcc44
 
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
@@ -174,6 +172,9 @@ fi
 
 
 %changelog
+* Mon May 18 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.6-1
+- update to 3.14.6
+
 * Thu Feb 24 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.5-3
 - fix build with gcc 4.4
 
