@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.7
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -61,6 +61,7 @@ A GUI interface to the APC UPS monitoring daemon.
 
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
+export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
 %configure \
         --sysconfdir="%{_sysconfdir}/apcupsd" \
         --with-cgi-bin="%{_localstatedir}/www/apcupsd" \
@@ -123,7 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc COPYING ChangeLog examples ReleaseNotes
 %dir %{_sysconfdir}/apcupsd
-%{_initrddir}/apcupsd
+%{_initddir}/apcupsd
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
 %config(noreplace) %{_sysconfdir}/apcupsd/changeme
@@ -172,6 +173,9 @@ fi
 
 
 %changelog
+* Fri Sep 18 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.7-3
+- fix building with new net-snmp version
+
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 3.14.7-2
 - rebuilt with new openssl
 
