@@ -1,5 +1,5 @@
 Name:         apcupsd
-Version:      3.14.7
+Version:      3.14.8
 Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Mon Jan 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-1
+- updated to 3.14.8
+
 * Mon Aug 01 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.7-1
 - updated to 3.14.7
 
