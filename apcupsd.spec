@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -11,6 +11,9 @@ Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
+
+#fix FTBFS, c++ linking needs -lstdc++ explicitly
+Patch2:       apcupsd-3.14.8-cxxld.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -58,6 +61,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
+%patch2 -p1 -b .cxxld
 
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
@@ -173,6 +177,9 @@ fi
 
 
 %changelog
+* Wed Sep 22 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-2
+- fix c++ code linking (FTBFS) (#631288)
+
 * Mon Jan 18 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-1
 - updated to 3.14.8
 
