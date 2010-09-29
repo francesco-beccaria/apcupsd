@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -177,6 +177,9 @@ fi
 
 
 %changelog
+* Wed Sep 29 2010 jkeating - 3.14.8-3
+- Rebuilt for gcc bug 634757
+
 * Wed Sep 22 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-2
 - fix c++ code linking (FTBFS) (#631288)
 
