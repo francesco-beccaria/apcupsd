@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      3%{?dist}
+Release:      4%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -177,6 +177,9 @@ fi
 
 
 %changelog
+* Fri Nov 05 2020 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-4
+- rebuilt for library update
+
 * Wed Sep 29 2010 jkeating - 3.14.8-3
 - Rebuilt for gcc bug 634757
 
