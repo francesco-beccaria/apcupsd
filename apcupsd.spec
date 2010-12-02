@@ -177,6 +177,9 @@ fi
 
 
 %changelog
+* Thu Dec 02 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-3
+- do not attempt to invoke directory as a script (#659219)
+
 * Wed Sep 22 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-2
 - fix c++ code linking (FTBFS) (#631288)
 
