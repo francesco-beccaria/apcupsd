@@ -64,7 +64,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch2 -p1 -b .cxxld
 
 #we will handle fedora/redhat part ourselfs
-sed '/SUBDIRS/s/^\(.*\) platforms \(.*\)$/\1 \2/' Makefile
+printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
 
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
@@ -99,9 +99,6 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
 
 make DESTDIR=$RPM_BUILD_ROOT install
-
-rm $RPM_BUILD_ROOT%{_initrddir}/halt
-rm $RPM_BUILD_ROOT%{_initrddir}/halt.old
 
 install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
