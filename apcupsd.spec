@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -63,6 +63,9 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch1 -p1 -b .shutdown
 %patch2 -p1 -b .cxxld
 
+#we will handle fedora/redhat part ourselfs
+printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
+
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
 export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
@@ -96,9 +99,6 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
 
 make DESTDIR=$RPM_BUILD_ROOT install
-
-rm $RPM_BUILD_ROOT%{_initrddir}/halt
-rm $RPM_BUILD_ROOT%{_initrddir}/halt.old
 
 install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
