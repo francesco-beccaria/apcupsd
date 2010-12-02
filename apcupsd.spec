@@ -63,6 +63,9 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch1 -p1 -b .shutdown
 %patch2 -p1 -b .cxxld
 
+#we will handle fedora/redhat part ourselfs
+sed '/SUBDIRS/s/^\(.*\) platforms \(.*\)$/\1 \2/' Makefile
+
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
 export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
