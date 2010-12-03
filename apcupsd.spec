@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.0
-Release:      3%{?dist}
+Release:      4%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -57,6 +57,9 @@ A GUI interface to the APC UPS monitoring daemon.
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
 
+#we will handle fedora/redhat part ourselfs
+printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
+
 %build
 %configure \
         --sysconfdir="%{_sysconfdir}/apcupsd" \
@@ -88,9 +91,6 @@ mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
 
 make DESTDIR=$RPM_BUILD_ROOT install
-
-rm $RPM_BUILD_ROOT%{_initrddir}/halt
-rm $RPM_BUILD_ROOT%{_initrddir}/halt.old
 
 install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
@@ -167,6 +167,9 @@ fi
 
 
 %changelog
+* Fri Dec 03 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.0-4
+- do not attempt to invoke directory as a script (#659219)
+
 * Mon Apr 23 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.0-3
 - Fix init script for LSB compliance (bug #237532)
 
