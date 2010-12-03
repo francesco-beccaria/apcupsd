@@ -57,7 +57,7 @@ A GUI interface to the APC UPS monitoring daemon.
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 
 #we will handle fedora/redhat part ourselfs
-printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile.in
+printf '@VARIABLES@\ntopdir = @topdir@\ntop_builddir = $(topdir)\n@TARGETS@\n\ninstall:\n\techo skipped\n' >platforms/redhat/Makefile.in
 
 %build
 %configure \
