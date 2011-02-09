@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.0
-Release:      4%{?dist}
+Release:      5%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -9,6 +9,7 @@ URL:          http://www.apcupsd.com
 Source0:      http://download.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
+Source3:      README.Red_Hat
 Patch0:       apcupsd-3.14.0-init.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -55,6 +56,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch0 -p1 -b .init
 # Don't strip binaries
 sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
+install -p -m 0666 %{SOURCE3} .
 
 #we will handle fedora/redhat part ourselfs
 printf '@VARIABLES@\ntopdir = @topdir@\ntop_builddir = $(topdir)\n@TARGETS@\n\ninstall:\n\techo skipped\n' >platforms/redhat/Makefile.in
@@ -117,7 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING ChangeLog examples ReleaseNotes
+%doc COPYING ChangeLog examples ReleaseNotes README.Red_Hat
 %dir %{_sysconfdir}/apcupsd
 %{_initrddir}/apcupsd
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
