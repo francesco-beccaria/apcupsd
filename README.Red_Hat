@@ -1,0 +1,4 @@
+please be sure to configure /etc/init.d/halt as per
+http://www.apcupsd.com/manual/manual.html#shutdown-sequence
+the ups lines you already see in this script are specific to another UPS
+monitoring daemon, nut. Leave them undisturbed.
