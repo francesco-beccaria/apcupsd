@@ -168,6 +168,9 @@ fi
 
 
 %changelog
+* Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.0-5
+- add readme file to doc explaining needed configuration of halt script
+
 * Fri Dec 03 2010 Michal Hlavinka <mhlavink@redhat.com> - 3.14.0-4
 - do not attempt to invoke directory as a script (#659219)
 
