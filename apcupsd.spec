@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.0
-Release:      5%{?dist}
+Version:      3.14.8
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -11,6 +11,7 @@ Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Source3:      README.Red_Hat
 Patch0:       apcupsd-3.14.0-init.patch
+Patch1:       apcupsd-3.14.8-cxxld.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
@@ -54,14 +55,15 @@ A GUI interface to the APC UPS monitoring daemon.
 %prep
 %setup -q
 %patch0 -p1 -b .init
+%patch1 -p1 -b .cxxld
 # Don't strip binaries
-sed -i -e 's/^\(.*INSTALL_PROGRAM.*\) -s /\1 /' src{,/cgi}/Makefile.in
 install -p -m 0666 %{SOURCE3} .
 
 #we will handle fedora/redhat part ourselfs
-printf '@VARIABLES@\ntopdir = @topdir@\ntop_builddir = $(topdir)\n@TARGETS@\n\ninstall:\n\techo skipped\n' >platforms/redhat/Makefile.in
+sed -i 's|^.*init.d/halt,.*$|\nignore-following:\n\ttrue|' platforms/redhat/Makefile
 
 %build
+export CPPFLAGS="$RPM_OPT_FLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
 %configure \
         --sysconfdir="%{_sysconfdir}/apcupsd" \
         --with-cgi-bin="%{_localstatedir}/www/apcupsd" \
@@ -109,7 +111,7 @@ desktop-file-install --vendor="fedora" \
         ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
 
 # Cleanup for later %doc processing
-chmod -x examples/*.conf examples/*.c
+chmod -x examples/*.c
 rm examples/*.in
 
 
@@ -132,6 +134,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/apcupsd/offbattery
 %config(noreplace) %{_sysconfdir}/apcupsd/onbattery
 %config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
+%{_datadir}/hal/fdi/policy/20thirdparty/80-apcupsd-ups-policy.fdi
 %attr(0755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
 
@@ -168,6 +171,9 @@ fi
 
 
 %changelog
+* Fri Apr 15 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-1
+- update apcupsd to 3.14.8 (fixes #696722)
+
 * Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.0-5
 - add readme file to doc explaining needed configuration of halt script
 
