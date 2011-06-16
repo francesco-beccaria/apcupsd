@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      7%{?dist}
+Release:      8%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -15,6 +15,9 @@ Patch1:       apcupsd-3.14.4-shutdown.patch
 
 #fix FTBFS, c++ linking needs -lstdc++ explicitly
 Patch2:       apcupsd-3.14.8-cxxld.patch
+
+# systemd support
+Patch3:       apcupsd-3.14.8-systemd.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -63,6 +66,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
 %patch2 -p1 -b .cxxld
+%patch3 -p1 -b .systemd
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -105,7 +109,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
 
-install -m755 platforms/redhat/apcupsd $RPM_BUILD_ROOT%{_initrddir}
+# systemd support
+install -p -D -m644 apcupsd.service $RPM_BUILD_ROOT/lib/systemd/system/apcupsd.service
+install -p -D -m755 apcupsd_shutdown $RPM_BUILD_ROOT/lib/systemd/system-shutdown/apcupsd_shutdown
 
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
@@ -130,7 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc COPYING ChangeLog examples ReleaseNotes README.Red_Hat
 %dir %{_sysconfdir}/apcupsd
-%{_initddir}/apcupsd
+/lib/systemd/system/%{name}.service
+/lib/systemd/system-shutdown/apcupsd_shutdown
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
 %config(noreplace) %{_sysconfdir}/apcupsd/changeme
@@ -164,21 +171,45 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
-/sbin/chkconfig --add apcupsd
+if [ $1 -eq 1 ] ; then 
+    # Initial installation 
+    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+else
+    # update (migration) sysv init -> systemd
+    # trigger won't work if we change NEVR in Fn-1
+    # also systemd does not like scripts in old apcupsd, it'd hang for long time, this prevents it
+    if [ -f /etc/init.d/apcupsd ]; then
+        activate=/bin/false
+        enable=/bin/false
+        [ -n "$(find /etc/rc.d/rc5.d/ -name 'S??apcupsd' 2>/dev/null)" ] && enable=/bin/true || :
+        systemctl is-active --quiet apcupsd.service >/dev/null 2>&1 && activate=/bin/true || :
+        $activate && service apcupsd stop >/dev/null 2>&1 || :
+        /sbin/chkconfig --del apcupsd >/dev/null 2>&1 || :
+        /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+        $enable && /bin/systemctl enable apcupsd.service >/dev/null 2>&1 || :
+        $activate && /bin/systemctl start apcupsd.service >/dev/null 2>&1 || :
+    fi  
+fi
 
 %preun
-if [ $1 = 0 ]; then
-   /sbin/service apcupsd stop >/dev/null 2>&1
-   /sbin/chkconfig --del apcupsd
+if [ $1 -eq 0 ] ; then
+    # Package removal, not upgrade
+    /bin/systemctl --no-reload disable apcupsd.service >/dev/null 2>&1 || :
+    /bin/systemctl stop apcupsd.service >/dev/null 2>&1 || :
 fi
 
 %postun
-if [ $1 -ge 1 ]; then
-   /sbin/service apcupsd condrestart >/dev/null 2>&1 || :
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then
+    # Package upgrade, not uninstall
+    /bin/systemctl try-restart apcupsd.service >/dev/null 2>&1 || :
 fi
 
 
 %changelog
+* Thu Jun 16 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-8
+- move from SysV init script to systemd service file
+
 * Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-7
 - add readme file to doc explaining needed configuration of halt script
 
