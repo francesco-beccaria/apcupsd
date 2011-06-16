@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      7%{?dist}
+Release:      8%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -9,12 +9,14 @@ URL:          http://www.apcupsd.com
 Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
-Source3:      README.Red_Hat
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
 
 #fix FTBFS, c++ linking needs -lstdc++ explicitly
 Patch2:       apcupsd-3.14.8-cxxld.patch
+
+# halt script does not exist in systemd
+Patch3:       apcupsd-3.14.8-systemdshutdown.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -63,10 +65,10 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
 %patch2 -p1 -b .cxxld
+%patch3 -p1 -b .systemd
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
-install -p -m 0666 %{SOURCE3} .
 
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
@@ -106,6 +108,7 @@ install -m744 platforms/apccontrol \
               $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
 
 install -m755 platforms/redhat/apcupsd $RPM_BUILD_ROOT%{_initrddir}
+install -m755 -p -D apcupsd_shutdown $RPM_BUILD_ROOT/lib/systemd/system-shutdown/apcupsd_shutdown
 
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
@@ -128,9 +131,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING ChangeLog examples ReleaseNotes README.Red_Hat
+%doc COPYING ChangeLog examples ReleaseNotes
 %dir %{_sysconfdir}/apcupsd
 %{_initddir}/apcupsd
+/lib/systemd/system-shutdown/apcupsd_shutdown
 %config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
 %attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
 %config(noreplace) %{_sysconfdir}/apcupsd/changeme
@@ -179,6 +183,9 @@ fi
 
 
 %changelog
+* Thu Jun 16 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-8
+- add script for shutdown in systemd environment (#346271)
+
 * Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-7
 - add readme file to doc explaining needed configuration of halt script
 

@@ -1,0 +1,13 @@
+diff -up apcupsd-3.14.8/apcupsd_shutdown.systemd apcupsd-3.14.8/apcupsd_shutdown
+--- apcupsd-3.14.8/apcupsd_shutdown.systemd	2011-06-16 10:33:08.831934420 +0200
++++ apcupsd-3.14.8/apcupsd_shutdown	2011-06-16 10:10:20.948796784 +0200
+@@ -0,0 +1,9 @@
++#!/bin/sh
++
++# See if this is a powerfail situation.
++if [ -f /etc/apcupsd/powerfail ]; then
++  echo
++  echo "APCUPSD will now power off the UPS"
++  echo
++  /etc/apcupsd/apccontrol killpower
++fi
