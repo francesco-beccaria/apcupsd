@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.8
-Release:      8%{?dist}
+Release:      9%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -207,6 +207,9 @@ fi
 
 
 %changelog
+* Fri Jul 08 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-9
+- rebuilt for net-snmp update
+
 * Thu Jun 16 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-8
 - move from SysV init script to systemd service file
 
