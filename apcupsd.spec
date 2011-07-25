@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.8
-Release:      4%{?dist}
+Version:      3.14.9
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -179,6 +179,9 @@ fi
 
 
 %changelog
+* Mon Jul 25 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-1
+- apcupsd updated to 3.14.9
+
 * Wed Feb 09 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-4
 - add readme file to doc explaining needed configuration of halt script
 
