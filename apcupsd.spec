@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.8
-Release:      8%{?dist}
+Version:      3.14.9
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -183,6 +183,9 @@ fi
 
 
 %changelog
+* Mon Jul 25 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-1
+- apcupsd updated to 3.14.9
+
 * Thu Jun 16 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-8
 - add script for shutdown in systemd environment (#346271)
 
