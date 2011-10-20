@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.9
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -18,6 +18,9 @@ Patch2:       apcupsd-3.14.8-cxxld.patch
 
 # systemd support
 Patch3:       apcupsd-3.14.8-systemd.patch
+
+# fix crash in gui, rhbz#578276
+Patch4:       apcupsd-3.14.9-fixgui.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -67,6 +70,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch1 -p1 -b .shutdown
 %patch2 -p1 -b .cxxld
 %patch3 -p1 -b .systemd
+%patch4 -p1 -b .fixgui
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -207,6 +211,9 @@ fi
 
 
 %changelog
+* Thu Oct 20 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-2
+- fix crash in gui (#578276), patch by Michal Sekletar
+
 * Mon Jul 25 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-1
 - apcupsd updated to 3.14.9
 
