@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.9
-Release:      2%{?dist}
+Version:      3.14.10
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -187,6 +187,11 @@ fi
 
 
 %changelog
+* Mon Dec 12 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-1
+- apcupsd updated to 3.14.10
+- fix MODEL vs. APCMODEL confusion. Remove APCMODEL and rename old MODEL
+  aka 'mode' to DRIVER.
+
 * Thu Oct 20 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-2
 - fix crash in gui (#578276), patch by Michal Sekletar
 
