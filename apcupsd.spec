@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -211,6 +211,9 @@ fi
 
 
 %changelog
+* Tue Feb 14 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-3
+- start after network is up (#789191)
+
 * Mon Dec 19 2011 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-2
 - remove powerfail flag on boot (#768684)
 
