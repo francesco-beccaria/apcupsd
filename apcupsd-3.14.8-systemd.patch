@@ -1,10 +1,11 @@
 diff -up apcupsd-3.14.8/apcupsd.service.systemd apcupsd-3.14.8/apcupsd.service
 --- apcupsd-3.14.8/apcupsd.service.systemd	2011-06-16 10:33:02.335889489 +0200
 +++ apcupsd-3.14.8/apcupsd.service	2011-06-16 09:59:02.616138047 +0200
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,11 @@
 +[Unit]
 +Description=APC UPS Power Control Daemon for Linux
 +After=syslog.target
++After=network.target
 +
 +[Service]
 +ExecStartPre=-/bin/rm -f /etc/apcupsd/powerfail
