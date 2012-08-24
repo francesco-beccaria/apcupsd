@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      5%{?dist}
+Release:      6%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -28,10 +28,9 @@ BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
 BuildRequires: net-snmp-devel, tcp_wrappers-devel
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
-Requires(post):  /sbin/chkconfig
-Requires(preun): /sbin/chkconfig
-Requires(preun): /sbin/service
-Requires(postun): /sbin/service
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
 %description
 Apcupsd can be used for controlling most APC UPSes. During a
@@ -175,42 +174,19 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
-if [ $1 -eq 1 ] ; then 
-    # Initial installation 
-    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-else
-    # update (migration) sysv init -> systemd
-    # trigger won't work if we change NEVR in Fn-1
-    # also systemd does not like scripts in old apcupsd, it'd hang for long time, this prevents it
-    if [ -f /etc/init.d/apcupsd ]; then
-        activate=/bin/false
-        enable=/bin/false
-        [ -n "$(find /etc/rc.d/rc5.d/ -name 'S??apcupsd' 2>/dev/null)" ] && enable=/bin/true || :
-        systemctl is-active --quiet apcupsd.service >/dev/null 2>&1 && activate=/bin/true || :
-        $activate && service apcupsd stop >/dev/null 2>&1 || :
-        /sbin/chkconfig --del apcupsd >/dev/null 2>&1 || :
-        /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-        $enable && /bin/systemctl enable apcupsd.service >/dev/null 2>&1 || :
-        $activate && /bin/systemctl start apcupsd.service >/dev/null 2>&1 || :
-    fi  
-fi
+%systemd_post apcupsd.service
 
 %preun
-if [ $1 -eq 0 ] ; then
-    # Package removal, not upgrade
-    /bin/systemctl --no-reload disable apcupsd.service >/dev/null 2>&1 || :
-    /bin/systemctl stop apcupsd.service >/dev/null 2>&1 || :
-fi
+%systemd_preun apcupsd.service
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-    /bin/systemctl try-restart apcupsd.service >/dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart apcupsd.service
 
 
 %changelog
+* Fri Aug 24 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-6
+- scriptlets replaced with new systemd macros (#851227)
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.10-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
