@@ -26,7 +26,7 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
 BuildRequires: net-snmp-devel, tcp_wrappers-devel
-BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils, wall
+BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils, sysvinit-tools
 Requires:      /bin/mail
 Requires(post): systemd-units
 Requires(preun): systemd-units
