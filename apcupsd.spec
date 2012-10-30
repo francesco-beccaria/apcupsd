@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      6%{?dist}
+Release:      7%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -184,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 30 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-7
+- fix configuration for httpd 2.4 (#871361)
+
 * Fri Aug 24 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-6
 - scriptlets replaced with new systemd macros (#851227)
 
