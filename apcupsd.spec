@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      7%{?dist}
+Release:      8%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -9,7 +9,6 @@ URL:          http://www.apcupsd.com
 Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
-Source3:      README.Red_Hat
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
 
@@ -73,7 +72,6 @@ A GUI interface to the APC UPS monitoring daemon.
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
-install -p -m 0666 %{SOURCE3} .
 
 %build
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
@@ -137,7 +135,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING ChangeLog examples ReleaseNotes README.Red_Hat
+%doc COPYING ChangeLog examples ReleaseNotes
 %dir %{_sysconfdir}/apcupsd
 /lib/systemd/system/%{name}.service
 /lib/systemd/system-shutdown/apcupsd_shutdown
@@ -184,6 +182,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 05 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-8
+- remove obsolete documentation
+
 * Tue Oct 30 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-7
 - fix configuration for httpd 2.4 (#871361)
 
