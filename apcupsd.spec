@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      8%{?dist}
+Release:      9%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -119,7 +119,10 @@ install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 install -d %{buildroot}%{_sysconfdir}/httpd/conf.d
 install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
 
-desktop-file-install --vendor="fedora" \
+desktop-file-install \
+%if (0%{?fedora} && 0%{?fedora} < 19) || (0%{?rhel} && 0%{?rhel} < 7)
+        --vendor="fedora" \
+%endif
         --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
         --delete-original \
         ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
@@ -162,7 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 %files gui
 %defattr(-,root,root,-)
 %{_bindir}/gapcmon
-%{_datadir}/applications/fedora-gapcmon.desktop
+%{_datadir}/applications/*gapcmon.desktop
 %{_datadir}/pixmaps/apcupsd.png
 %{_datadir}/pixmaps/charging.png
 %{_datadir}/pixmaps/gapc_prefs.png
@@ -182,6 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 14 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 3.14.10-9
+- Remove --vendor flag to desktop-file-install on F19+
+
 * Tue Feb 05 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-8
 - remove obsolete documentation
 
