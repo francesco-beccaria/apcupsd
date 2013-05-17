@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      9%{?dist}
+Release:      10%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -74,6 +74,7 @@ A GUI interface to the APC UPS monitoring daemon.
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
 
 %build
+%global _hardened_build 1
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
 export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
 %configure \
@@ -185,6 +186,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 17 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-10
+- make executables hardened (#955341)
+
 * Thu Feb 14 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 3.14.10-9
 - Remove --vendor flag to desktop-file-install on F19+
 
