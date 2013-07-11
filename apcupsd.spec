@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      7%{?dist}
+Release:      8%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -76,6 +76,7 @@ printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
 install -p -m 0666 %{SOURCE3} .
 
 %build
+%global _hardened_build 1
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
 export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
 %configure \
@@ -184,6 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 11 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-8
+- make executables hardened (#955341)
+
 * Tue Oct 30 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-7
 - fix configuration for httpd 2.4 (#871361)
 
