@@ -22,15 +22,16 @@ diff -up apcupsd-3.14.8/platforms/redhat/apcupsd.in.init apcupsd-3.14.8/platform
  APCPID=@PIDDIR@/apcupsd.pid
  
  # Source function libarary
-@@ -14,7 +24,6 @@ APCPID=@PIDDIR@/apcupsd.pid
+@@ -14,7 +24,7 @@ APCPID=@PIDDIR@/apcupsd.pid
  case "$1" in
      start)
         rm -f @PWRFAILDIR@/powerfail
 -       rm -f @nologdir@/nologin
++       grep -q 'POWER FAILURE' @nologdir@/nologin && rm -f @nologdir@/nologin
         echo -n "Starting UPS monitoring:" 
         daemon @sbindir@/apcupsd -f @sysconfdir@/apcupsd.conf
         RETVAL=$?
-@@ -30,9 +39,11 @@ case "$1" in
+@@ -30,9 +40,11 @@ case "$1" in
         ;;
      restart|force-reload)
         $0 stop
@@ -43,7 +44,7 @@ diff -up apcupsd-3.14.8/platforms/redhat/apcupsd.in.init apcupsd-3.14.8/platform
      reload)
         echo "$0: reload not implemented"
         exit 3
-@@ -48,7 +59,7 @@ case "$1" in
+@@ -48,7 +60,7 @@ case "$1" in
         fi
         ;;
      *)
