@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -175,10 +175,10 @@ fi
 
 
 %changelog
-* Tue Aug 13 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-1
+* Tue Aug 13 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-2
 - if apcupsd created nologin file, remove it on apcupsd startup (#992991)
 
-* Mon May 28 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.9-1
+* Mon May 28 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-1
 - apcupsd updated to 3.14.10
 
 * Fri Feb 10 2012 Michal Hlavinka <mhlavink@redhat.com> - 3.14.8-4
