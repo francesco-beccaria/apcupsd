@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      12%{?dist}
+Release:      13%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -20,6 +20,7 @@ Patch3:       apcupsd-3.14.8-systemd.patch
 
 # fix crash in gui, rhbz#578276
 Patch4:       apcupsd-3.14.9-fixgui.patch
+Patch5: apcupsd-aarch64.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -69,6 +70,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch2 -p1 -b .cxxld
 %patch3 -p1 -b .systemd
 %patch4 -p1 -b .fixgui
+%patch5 -p1 -b .aarch64
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -186,6 +188,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 14 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-13
+- fix aarch64 support (#925007)
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.10-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
@@ -272,7 +277,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 18 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.6-1
 - update to 3.14.6
 
-* Thu Feb 24 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.5-3
+* Tue Feb 24 2009 Michal Hlavinka <mhlavink@redhat.com> - 3.14.5-3
 - fix build with gcc 4.4
 
 * Mon Feb 23 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.5-2
@@ -308,7 +313,7 @@ rm -rf $RPM_BUILD_ROOT
 - Add patch to close open file descriptors (bug #247162)
 - Stop/restart service as needed on removal/upgrade
 
-* Mon Jun 02 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.1-2
+* Mon Jun 04 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.1-2
 - Add patch for linux USB UPS detection (bug #245864)
 
 * Tue May 29 2007 - Orion Poplawski <orion@cora.nwra.com> - 3.14.1-1
