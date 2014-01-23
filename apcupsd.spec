@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      13%{?dist}
+Release:      14%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -21,12 +21,13 @@ Patch3:       apcupsd-3.14.8-systemd.patch
 # fix crash in gui, rhbz#578276
 Patch4:       apcupsd-3.14.9-fixgui.patch
 Patch5: apcupsd-aarch64.patch
+Patch6: apcupsd-3.14.10-nodbg.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
 BuildRequires: net-snmp-devel, tcp_wrappers-devel
-BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils, sysvinit-tools
+BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post): systemd-units
 Requires(preun): systemd-units
@@ -71,6 +72,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch3 -p1 -b .systemd
 %patch4 -p1 -b .fixgui
 %patch5 -p1 -b .aarch64
+%patch6 -p1 -b .nodbg
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -188,6 +190,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 23 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-14
+- reduce amount of debug messages (#1053324)
+
 * Wed Aug 14 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-13
 - fix aarch64 support (#925007)
 
