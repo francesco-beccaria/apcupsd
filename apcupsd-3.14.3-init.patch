@@ -27,7 +27,7 @@ diff -up apcupsd-3.14.8/platforms/redhat/apcupsd.in.init apcupsd-3.14.8/platform
      start)
         rm -f @PWRFAILDIR@/powerfail
 -       rm -f @nologdir@/nologin
-+       grep -q 'POWER FAILURE' @nologdir@/nologin && rm -f @nologdir@/nologin
++       grep -s -q 'POWER FAILURE' @nologdir@/nologin && rm -f @nologdir@/nologin
         echo -n "Starting UPS monitoring:" 
         daemon @sbindir@/apcupsd -f @sysconfdir@/apcupsd.conf
         RETVAL=$?

@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.10
-Release:      2%{?dist}
+Release:      3%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -175,6 +175,9 @@ fi
 
 
 %changelog
+* Thu Feb 27 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-3
+- suppress error message when /etc/nologin does not exist
+
 * Tue Aug 13 2013 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-2
 - if apcupsd created nologin file, remove it on apcupsd startup (#992991)
 
