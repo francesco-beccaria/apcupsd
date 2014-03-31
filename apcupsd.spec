@@ -1,5 +1,5 @@
 Name:         apcupsd
-Version:      3.14.11
+Version:      3.14.12
 Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
@@ -99,6 +99,7 @@ export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
         --with-serial-dev= \
         --with-upstype=usb \
         --with-upscable=usb \
+        --with-lock-dir=/var/lock \
         APCUPSD_MAIL=/bin/mail
 make %{?_smp_mflags}
 
@@ -188,6 +189,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 31 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.12-1
+- apcupsd updated to 3.14.12
+- force lock dir to /var/lock (#1064099)
+
 * Mon Feb 17 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.11-1
 - apcupsd updated to 3.14.11
 
