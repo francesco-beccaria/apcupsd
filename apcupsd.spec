@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.12
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -191,6 +191,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.12-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Mon Mar 31 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.12-1
 - apcupsd updated to 3.14.12
 - force lock dir to /var/lock (#1064099)
