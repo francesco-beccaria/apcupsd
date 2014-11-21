@@ -87,6 +87,7 @@ export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
         --with-serial-dev= \
         --with-upstype=usb \
         --with-upscable=usb \
+        --with-lock-dir=/var/lock \
         APCUPSD_MAIL=/bin/mail
 make %{?_smp_mflags}
 
@@ -177,6 +178,7 @@ fi
 %changelog
 * Fri Nov 21 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.12-1
 - apcupsd updated to 3.14.10
+- force lock dir to /var/lock
 
 * Thu Feb 27 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-3
 - suppress error message when /etc/nologin does not exist
