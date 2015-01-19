@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.10
-Release:      14%{?dist}
+Version:      3.14.12
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -189,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 19 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.12-1
+- apcupsd updated to 3.14.12
+
 * Tue Aug 05 2014 Michal Hlavinka <mhlavink@redhat.com> - 3.14.10-14
 - force lock dir to /var/lock
 
