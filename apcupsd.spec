@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.12
-Release:      3%{?dist}
+Version:      3.14.13
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -12,16 +12,11 @@ Source2:      apcupsd-httpd.conf
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
 
-#fix FTBFS, c++ linking needs -lstdc++ explicitly
-Patch2:       apcupsd-3.14.8-cxxld.patch
-
 # systemd support
 Patch3:       apcupsd-3.14.8-systemd.patch
 
 # fix crash in gui, rhbz#578276
 Patch4:       apcupsd-3.14.9-fixgui.patch
-Patch5: apcupsd-aarch64.patch
-Patch6: apcupsd-3.14.10-nodbg.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -68,11 +63,8 @@ A GUI interface to the APC UPS monitoring daemon.
 %setup -q
 %patch0 -p1 -b .init
 %patch1 -p1 -b .shutdown
-%patch2 -p1 -b .cxxld
 %patch3 -p1 -b .systemd
 %patch4 -p1 -b .fixgui
-%patch5 -p1 -b .aarch64
-%patch6 -p1 -b .nodbg
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -191,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 03 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-1
+- apcupsd updated to 3.14.13
+
 * Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.12-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
