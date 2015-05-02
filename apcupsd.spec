@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.13
-Release:      1%{?dist}
+Release:      2%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -183,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 3.14.13-2
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Tue Feb 03 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-1
 - apcupsd updated to 3.14.13
 
