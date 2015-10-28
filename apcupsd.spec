@@ -100,7 +100,6 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
 
 make DESTDIR=$RPM_BUILD_ROOT install
