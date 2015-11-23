@@ -191,6 +191,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Nov 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-2
 - fix apcaccess crash if apcupsd is not running (#1236367,#1197383)
 - enabled modbus-usb (#1195071)
+- add bigger icon (#1157532)
 
 * Tue Feb 03 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-1
 - apcupsd updated to 3.14.13
