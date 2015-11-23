@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.13
-Release:      3%{?dist}
+Release:      4%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -9,6 +9,7 @@ URL:          http://www.apcupsd.com
 Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
+Source3:      apcupsd64x64.png
 Patch0:       apcupsd-3.14.3-init.patch
 Patch1:       apcupsd-3.14.4-shutdown.patch
 
@@ -17,11 +18,12 @@ Patch3:       apcupsd-3.14.8-systemd.patch
 
 # fix crash in gui, rhbz#578276
 Patch4:       apcupsd-3.14.9-fixgui.patch
+Patch5: apcupsd-3.14.13-netopenfix.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
-BuildRequires: net-snmp-devel, tcp_wrappers-devel
+BuildRequires: net-snmp-devel, tcp_wrappers-devel, libusb-devel
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
 Requires(post): systemd-units
@@ -65,6 +67,7 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch1 -p1 -b .shutdown
 %patch3 -p1 -b .systemd
 %patch4 -p1 -b .fixgui
+%patch5 -p1 -b .netopenfix
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -85,8 +88,7 @@ export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
         --enable-net-snmp \
         --enable-snmp \
         --enable-usb \
-        --enable-powerflute \
-        --enable-nls \
+        --enable-modbus-usb \
         --enable-gapcmon \
         --enable-pcnet \
         --with-libwrap=%{_libdir} \
@@ -116,12 +118,14 @@ install -d %{buildroot}%{_sysconfdir}/logrotate.d
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 install -d %{buildroot}%{_sysconfdir}/httpd/conf.d
 install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
+install -D -m0644 %{SOURCE3} %{buildroot}%{_datadir}/pixmaps/apcupsd64x64.png
 
 desktop-file-install \
 %if (0%{?fedora} && 0%{?fedora} < 19) || (0%{?rhel} && 0%{?rhel} < 7)
         --vendor="fedora" \
 %endif
         --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+        --set-icon=apcupsd64x64 \
         --delete-original \
         ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
 
@@ -165,6 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/gapcmon
 %{_datadir}/applications/*gapcmon.desktop
 %{_datadir}/pixmaps/apcupsd.png
+%{_datadir}/pixmaps/apcupsd64x64.png
 %{_datadir}/pixmaps/charging.png
 %{_datadir}/pixmaps/gapc_prefs.png
 %{_datadir}/pixmaps/onbatt.png
@@ -183,6 +188,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-4
+- fix apcaccess crash if apcupsd is not running (#1236367,#1197383)
+- enabled modbus-usb (#1195071)
+- add bigger icon (#1157532)
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.13-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
