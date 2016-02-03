@@ -1,6 +1,6 @@
 Name:         apcupsd
 Version:      3.14.13
-Release:      4%{?dist}
+Release:      5%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -187,6 +187,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.14.13-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Mon Nov 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-4
 - fix apcaccess crash if apcupsd is not running (#1236367,#1197383)
 - enabled modbus-usb (#1195071)
