@@ -1,6 +1,6 @@
 Name:         apcupsd
-Version:      3.14.13
-Release:      2%{?dist}
+Version:      3.14.14
+Release:      1%{?dist}
 Summary:      APC UPS Power Control Daemon for Linux
 
 Group:        System Environment/Daemons
@@ -18,7 +18,6 @@ Patch3:       apcupsd-3.14.8-systemd.patch
 
 # fix crash in gui, rhbz#578276
 Patch4:       apcupsd-3.14.9-fixgui.patch
-Patch5: apcupsd-3.14.13-netopenfix.patch
 
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -67,7 +66,6 @@ A GUI interface to the APC UPS monitoring daemon.
 %patch1 -p1 -b .shutdown
 %patch3 -p1 -b .systemd
 %patch4 -p1 -b .fixgui
-%patch5 -p1 -b .netopenfix
 
 #we will handle fedora/redhat part ourselfs
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
@@ -75,7 +73,9 @@ printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
 %build
 %global _hardened_build 1
 cp -p /usr/lib/rpm/config.{guess,sub} autoconf/
-export CPPFLAGS="$CPPFLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS"
+export CPPFLAGS="$RPM_OPT_FLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS -Wno-format-security -Wno-error=format-security"
+export CXXFLAGS="$CPPFLAGS"
+export CFLAGS="$CPPFLAGS"
 %configure \
         --sysconfdir="%{_sysconfdir}/apcupsd" \
         --with-cgi-bin="%{_localstatedir}/www/apcupsd" \
@@ -102,7 +102,6 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
 
 make DESTDIR=$RPM_BUILD_ROOT install
@@ -188,10 +187,22 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Nov 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-2
+* Thu Jun 02 2016 Michal Hlavinka <mhlavink@redhat.com> - 3.14.14-1
+- updated to 3.14.14
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.14.13-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Mon Nov 23 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-4
 - fix apcaccess crash if apcupsd is not running (#1236367,#1197383)
 - enabled modbus-usb (#1195071)
 - add bigger icon (#1157532)
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.14.13-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 3.14.13-2
+- Rebuilt for GCC 5 C++11 ABI change
 
 * Tue Feb 03 2015 Michal Hlavinka <mhlavink@redhat.com> - 3.14.13-1
 - apcupsd updated to 3.14.13
