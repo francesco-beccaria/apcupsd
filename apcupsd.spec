@@ -1,12 +1,11 @@
 Name:         apcupsd
 Version:      3.14.14
-Release:      1%{?dist}
-Summary:      APC UPS Power Control Daemon for Linux
+Release:      2%{?dist}
+Summary:      APC UPS Power Control Daemon
 
-Group:        System Environment/Daemons
 License:      GPLv2
 URL:          http://www.apcupsd.com
-Source0:      http://downloads.sourceforge.net/apcupsd/%{name}-%{version}.tar.gz
+Source0:      https://downloads.sourceforge.net/apcupsd/apcupsd-%version.tar.gz
 Source1:      apcupsd.logrotate
 Source2:      apcupsd-httpd.conf
 Source3:      apcupsd64x64.png
@@ -19,9 +18,7 @@ Patch3:       apcupsd-3.14.8-systemd.patch
 # fix crash in gui, rhbz#578276
 Patch4:       apcupsd-3.14.9-fixgui.patch
 
-BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-BuildRequires: glibc-devel >= 2.3, gd-devel > 2.0
+BuildRequires: glibc-devel, gd-devel
 BuildRequires: net-snmp-devel, tcp_wrappers-devel, libusb-devel
 BuildRequires: gtk2-devel, gnome-vfs2-devel, desktop-file-utils
 Requires:      /bin/mail
@@ -44,7 +41,7 @@ Some features depend on what UPS model you have (simple or smart).
 %package cgi
 Summary:      Web interface for apcupsd
 Group:        Applications/Internet
-Requires:     %{name} = %{version}-%{release}
+Requires:     apcupsd = %version-%release
 Requires:     httpd
 
 %description cgi
@@ -54,20 +51,16 @@ A CGI interface to the APC UPS monitoring daemon.
 %package gui
 Summary:      GUI interface for apcupsd
 Group:        Applications/System
-Requires:     %{name} = %{version}-%{release}
+Requires:     apcupsd = %version-%release
 
 %description gui
 A GUI interface to the APC UPS monitoring daemon.
 
 
 %prep
-%setup -q
-%patch0 -p1 -b .init
-%patch1 -p1 -b .shutdown
-%patch3 -p1 -b .systemd
-%patch4 -p1 -b .fixgui
+%autosetup -p1
 
-#we will handle fedora/redhat part ourselfs
+#we will handle fedora/redhat part ourselves
 printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
 
 %build
@@ -77,8 +70,8 @@ export CPPFLAGS="$RPM_OPT_FLAGS -DNETSNMP_NO_LEGACY_DEFINITIONS -Wno-format-secu
 export CXXFLAGS="$CPPFLAGS"
 export CFLAGS="$CPPFLAGS"
 %configure \
-        --sysconfdir="%{_sysconfdir}/apcupsd" \
-        --with-cgi-bin="%{_localstatedir}/www/apcupsd" \
+        --sysconfdir="/etc/apcupsd" \
+        --with-cgi-bin="/var/www/apcupsd" \
         --sbindir=/sbin \
         --enable-cgi \
         --enable-pthreads \
@@ -97,83 +90,70 @@ export CFLAGS="$CPPFLAGS"
         --with-upscable=usb \
         --with-lock-dir=/var/lock \
         APCUPSD_MAIL=/bin/mail
-make %{?_smp_mflags}
+%make_build
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/www/apcupsd
-
-make DESTDIR=$RPM_BUILD_ROOT install
-
+mkdir -p %buildroot/var/www/apcupsd
+make DESTDIR=%buildroot install
 install -m744 platforms/apccontrol \
-              $RPM_BUILD_ROOT%{_sysconfdir}/apcupsd/apccontrol
+              %buildroot/etc/apcupsd/apccontrol
 
 # systemd support
-install -p -D -m644 apcupsd.service $RPM_BUILD_ROOT/lib/systemd/system/apcupsd.service
-install -p -D -m755 apcupsd_shutdown $RPM_BUILD_ROOT/lib/systemd/system-shutdown/apcupsd_shutdown
+install -p -D -m644 apcupsd.service %buildroot/lib/systemd/system/apcupsd.service
+install -p -D -m755 apcupsd_shutdown %buildroot/lib/systemd/system-shutdown/apcupsd_shutdown
 
-install -d %{buildroot}%{_sysconfdir}/logrotate.d
-install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
-install -d %{buildroot}%{_sysconfdir}/httpd/conf.d
-install -m0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
-install -D -m0644 %{SOURCE3} %{buildroot}%{_datadir}/pixmaps/apcupsd64x64.png
+install -d %buildroot/etc/logrotate.d
+install -m0644 %SOURCE1 %buildroot/etc/logrotate.d/apcupsd
+install -d %buildroot/etc/httpd/conf.d
+install -m0644 %SOURCE2 %buildroot/etc/httpd/conf.d/apcupsd.conf
+install -D -m0644 %SOURCE3 %buildroot/usr/share/pixmaps/apcupsd64x64.png
 
 desktop-file-install \
-%if (0%{?fedora} && 0%{?fedora} < 19) || (0%{?rhel} && 0%{?rhel} < 7)
         --vendor="fedora" \
-%endif
-        --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+        --dir=%buildroot/usr/share/applications \
         --set-icon=apcupsd64x64 \
         --delete-original \
-        ${RPM_BUILD_ROOT}%{_datadir}/applications/gapcmon.desktop
+        %buildroot/usr/share/applications/gapcmon.desktop
 
-# Cleanup for later %doc processing
+# Cleanup for later %%doc processing
 chmod -x examples/*.c
 rm examples/*.in
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
-%defattr(-,root,root,-)
-%doc COPYING ChangeLog examples ReleaseNotes
-%dir %{_sysconfdir}/apcupsd
-/lib/systemd/system/%{name}.service
+%license COPYING
+%doc ChangeLog examples ReleaseNotes
+%dir /etc/apcupsd
+/lib/systemd/system/apcupsd.service
 /lib/systemd/system-shutdown/apcupsd_shutdown
-%config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.conf
-%attr(0755,root,root) %{_sysconfdir}/apcupsd/apccontrol
-%config(noreplace) %{_sysconfdir}/apcupsd/changeme
-%config(noreplace) %{_sysconfdir}/apcupsd/commfailure
-%config(noreplace) %{_sysconfdir}/apcupsd/commok
-%config(noreplace) %{_sysconfdir}/apcupsd/offbattery
-%config(noreplace) %{_sysconfdir}/apcupsd/onbattery
-%config(noreplace) %{_sysconfdir}/logrotate.d/apcupsd
-%{_datadir}/hal/fdi/policy/20thirdparty/80-apcupsd-ups-policy.fdi
+%config(noreplace) /etc/apcupsd/apcupsd.conf
+%attr(0755,root,root) /etc/apcupsd/apccontrol
+%config(noreplace) /etc/apcupsd/changeme
+%config(noreplace) /etc/apcupsd/commfailure
+%config(noreplace) /etc/apcupsd/commok
+%config(noreplace) /etc/apcupsd/offbattery
+%config(noreplace) /etc/apcupsd/onbattery
+%config(noreplace) /etc/logrotate.d/apcupsd
+/usr/share/hal/fdi/policy/20thirdparty/80-apcupsd-ups-policy.fdi
 %attr(0755,root,root) /sbin/*
 %{_mandir}/*/*
 
 %files cgi
-%defattr(-,root,root,-)
-%config(noreplace) %{_sysconfdir}/apcupsd/apcupsd.css
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/apcupsd.conf
-%config(noreplace) %{_sysconfdir}/apcupsd/hosts.conf
-%config(noreplace) %{_sysconfdir}/apcupsd/multimon.conf
-%{_localstatedir}/www/apcupsd/
+%config(noreplace) /etc/apcupsd/apcupsd.css
+%config(noreplace) /etc/httpd/conf.d/apcupsd.conf
+%config(noreplace) /etc/apcupsd/hosts.conf
+%config(noreplace) /etc/apcupsd/multimon.conf
+/var/www/apcupsd/
 
 %files gui
-%defattr(-,root,root,-)
-%{_bindir}/gapcmon
-%{_datadir}/applications/*gapcmon.desktop
-%{_datadir}/pixmaps/apcupsd.png
-%{_datadir}/pixmaps/apcupsd64x64.png
-%{_datadir}/pixmaps/charging.png
-%{_datadir}/pixmaps/gapc_prefs.png
-%{_datadir}/pixmaps/onbatt.png
-%{_datadir}/pixmaps/online.png
-%{_datadir}/pixmaps/unplugged.png
+/usr/bin/gapcmon
+/usr/share/applications/*gapcmon.desktop
+/usr/share/pixmaps/apcupsd.png
+/usr/share/pixmaps/apcupsd64x64.png
+/usr/share/pixmaps/charging.png
+/usr/share/pixmaps/gapc_prefs.png
+/usr/share/pixmaps/onbatt.png
+/usr/share/pixmaps/online.png
+/usr/share/pixmaps/unplugged.png
 
 
 %post
@@ -187,6 +167,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 22 2016 Jason L Tibbitts III <tibbs@math.uh.edu> - 3.14.14-2
+- Clean up the spec a bit.
+
 * Thu Jun 02 2016 Michal Hlavinka <mhlavink@redhat.com> - 3.14.14-1
 - updated to 3.14.14
 

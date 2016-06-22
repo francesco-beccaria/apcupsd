@@ -1,0 +1,3 @@
+setOption('NetworkEnabled', False)
+addFilter('hardcoded-library-path in %buildroot/lib/systemd')
+addFilter('hardcoded-library-path in /lib/systemd')
