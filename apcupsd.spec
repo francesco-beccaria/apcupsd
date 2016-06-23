@@ -1,22 +1,19 @@
-Name:         apcupsd
-Version:      3.14.14
-Release:      2%{?dist}
-Summary:      APC UPS Power Control Daemon
+Name:       apcupsd
+Version:    3.14.14
+Release:    2%{?dist}
+Summary:    APC UPS Power Control Daemon
 
-License:      GPLv2
-URL:          http://www.apcupsd.com
-Source0:      https://downloads.sourceforge.net/apcupsd/apcupsd-%version.tar.gz
-Source1:      apcupsd.logrotate
-Source2:      apcupsd-httpd.conf
-Source3:      apcupsd64x64.png
-Patch0:       apcupsd-3.14.3-init.patch
-Patch1:       apcupsd-3.14.4-shutdown.patch
-
-# systemd support
-Patch3:       apcupsd-3.14.8-systemd.patch
+License:    GPLv2
+URL:        http://www.apcupsd.com
+Source0:    https://downloads.sourceforge.net/apcupsd/apcupsd-%version.tar.gz
+Source1:    apcupsd.service
+Source2:    apcupsd_shutdown
+Source3:    apcupsd-httpd.conf
+Source4:    apcupsd.logrotate
+Source5:    apcupsd64x64.png
 
 # fix crash in gui, rhbz#578276
-Patch4:       apcupsd-3.14.9-fixgui.patch
+Patch0:       apcupsd-3.14.9-fixgui.patch
 
 BuildRequires: glibc-devel, gd-devel
 BuildRequires: net-snmp-devel, tcp_wrappers-devel, libusb-devel
@@ -60,8 +57,8 @@ A GUI interface to the APC UPS monitoring daemon.
 %prep
 %autosetup -p1
 
-#we will handle fedora/redhat part ourselves
-printf 'install:\n\techo skipped\n' >platforms/redhat/Makefile
+# Override the provided platform makefile
+printf 'install:\n\techo skipped\n' > platforms/redhat/Makefile
 
 %build
 %global _hardened_build 1
@@ -98,15 +95,16 @@ make DESTDIR=%buildroot install
 install -m744 platforms/apccontrol \
               %buildroot/etc/apcupsd/apccontrol
 
-# systemd support
-install -p -D -m644 apcupsd.service %buildroot/lib/systemd/system/apcupsd.service
-install -p -D -m755 apcupsd_shutdown %buildroot/lib/systemd/system-shutdown/apcupsd_shutdown
+install -p -D -m644 %SOURCE1 %buildroot/lib/systemd/system/apcupsd.service
+install -p -D -m755 %SOURCE2 %buildroot/lib/systemd/system-shutdown/apcupsd_shutdown
 
-install -d %buildroot/etc/logrotate.d
-install -m0644 %SOURCE1 %buildroot/etc/logrotate.d/apcupsd
-install -d %buildroot/etc/httpd/conf.d
-install -m0644 %SOURCE2 %buildroot/etc/httpd/conf.d/apcupsd.conf
-install -D -m0644 %SOURCE3 %buildroot/usr/share/pixmaps/apcupsd64x64.png
+#install -d %buildroot/etc/httpd/conf.d
+install -p -D -m0644 %SOURCE3 %buildroot/etc/httpd/conf.d/apcupsd.conf
+
+#install -d %buildroot/etc/logrotate.d
+install -p -D -m0644 %SOURCE4 %buildroot/etc/logrotate.d/apcupsd
+
+install -p -D -m0644 %SOURCE5 %buildroot/usr/share/pixmaps/apcupsd64x64.png
 
 desktop-file-install \
         --vendor="fedora" \
@@ -169,6 +167,12 @@ rm examples/*.in
 %changelog
 * Wed Jun 22 2016 Jason L Tibbitts III <tibbs@math.uh.edu> - 3.14.14-2
 - Clean up the spec a bit.
+- I've no idea why the unit file and shutdown script were added in a patch.
+  The unit file also used network.target instead of network-online.target.
+- Remove apcupsd-3.14.4-shutdown.patch.  I have no idea why it was there, as
+  "shutdown -h now" should be hust fine, while "-h -H now" is both
+  contradictory and should just leave the machine halted but running, which
+  doesn't make much sense.
 
 * Thu Jun 02 2016 Michal Hlavinka <mhlavink@redhat.com> - 3.14.14-1
 - updated to 3.14.14
