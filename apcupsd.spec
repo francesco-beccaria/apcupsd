@@ -91,19 +91,14 @@ export CFLAGS="$CPPFLAGS"
 
 %install
 mkdir -p %buildroot/var/www/apcupsd
-make DESTDIR=%buildroot install
+%make_install
 install -m744 platforms/apccontrol \
               %buildroot/etc/apcupsd/apccontrol
 
-install -p -D -m644 %SOURCE1 %buildroot/lib/systemd/system/apcupsd.service
-install -p -D -m755 %SOURCE2 %buildroot/lib/systemd/system-shutdown/apcupsd_shutdown
-
-#install -d %buildroot/etc/httpd/conf.d
+install -p -D -m0644 %SOURCE1 %buildroot/lib/systemd/system/apcupsd.service
+install -p -D -m0755 %SOURCE2 %buildroot/lib/systemd/system-shutdown/apcupsd_shutdown
 install -p -D -m0644 %SOURCE3 %buildroot/etc/httpd/conf.d/apcupsd.conf
-
-#install -d %buildroot/etc/logrotate.d
 install -p -D -m0644 %SOURCE4 %buildroot/etc/logrotate.d/apcupsd
-
 install -p -D -m0644 %SOURCE5 %buildroot/usr/share/pixmaps/apcupsd64x64.png
 
 desktop-file-install \
@@ -167,12 +162,11 @@ rm examples/*.in
 %changelog
 * Wed Jun 22 2016 Jason L Tibbitts III <tibbs@math.uh.edu> - 3.14.14-2
 - Clean up the spec a bit.
-- I've no idea why the unit file and shutdown script were added in a patch.
-  The unit file also used network.target instead of network-online.target.
-- Remove apcupsd-3.14.4-shutdown.patch.  I have no idea why it was there, as
-  "shutdown -h now" should be hust fine, while "-h -H now" is both
-  contradictory and should just leave the machine halted but running, which
-  doesn't make much sense.
+- Stop adding the unit file and shutdown script in a patch and just included
+  them as sources instead.
+- Have the unit go after network-online.target instead of network.target.
+- Remove apcupsd-3.14.4-shutdown.patch.  Both the old and the new commands to
+  exactly the same thing for me (halt but not power down) on my test machines.
 
 * Thu Jun 02 2016 Michal Hlavinka <mhlavink@redhat.com> - 3.14.14-1
 - updated to 3.14.14
