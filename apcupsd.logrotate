@@ -1,5 +1,0 @@
-/var/log/apcupsd.events {
-        missingok
-        copytruncate
-        notifempty
-}
